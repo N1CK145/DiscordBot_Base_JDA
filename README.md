@@ -38,3 +38,7 @@ mysql.username=root
 # Der Host der Datenbank wird hier festgelegt.
 mysql.host=localhost
 ```
+
+## Build
+Die .jar wird über gradle erstellt. Um dies zu errreichen gehe in das Verzeichniss mit der `gradlew` Datei.
+Dort wird dann der Befehl `gradlew build` ausgeführt
