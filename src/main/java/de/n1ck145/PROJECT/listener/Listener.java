@@ -7,6 +7,7 @@ import de.n1ck145.PROJECT.utils.CommandManager;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -19,9 +20,13 @@ public class Listener extends ListenerAdapter{
     @Override
     public void onReady(ReadyEvent event) {
         manager.setStatus(OnlineStatus.ONLINE);
-        manager.setActivity(Activity.playing("Leben."));
+        manager.setActivity(Activity.playing("v." + Main.getVersion()));
 
-        System.out.println("Bot online!");
+        System.out.println("Bot online! Version: " + Main.getVersion());
+        System.out.println("Guilds:");
+        for (Guild g : manager.getGuilds()){
+            System.out.println("\t- " + g.getName());
+        }
     }
 
     @Override

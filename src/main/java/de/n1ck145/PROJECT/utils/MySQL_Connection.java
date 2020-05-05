@@ -23,15 +23,11 @@ public class MySQL_Connection {
         this.password = password;
     }
 
-    public void connect() {
-        if (!isConnected())
-            try {
-                con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
-                System.out.println("MySQL connencted as " + username + "@" + host + ":" + port);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("MySQL connection error!");
-            }
+    public void connect() throws SQLException{
+        if (!isConnected()){
+            con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
+            System.out.println("MySQL connencted as " + username + "@" + host + ":" + port);
+        }
     }
 
     public void disconnect() {
