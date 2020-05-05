@@ -90,17 +90,21 @@ public class Main {
         }
 
         // Create tables
-        database.update("CREATE TABLE tbl_server(" +
+        database.update("CREATE TABLE IF NOT EXISTS tbl_server(" +
                 "ServerID varchar(32) NOT NULL," +
                 "ServerName varchar(64) NOT NULL," +
-                "CreatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                "CreatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "PRIMARY KEY (ServerID)" +
                 ");");
 
-        String qry = "CREATE TABLE tbl_serverSettings(" +
+        String qry = "CREATE TABLE IF NOT EXISTS tbl_serverSettings(" +
                 "ServerID varchar(32) NOT NULL,";
         for(SETTING s : SETTING.values()){
-            qry += s.name() + " varchar(32), ";
+            if(s.name().equals("PREFIX"))
+                qry += s.name() + " varchar(32) DEFAULT '--', ";
+            else
+                qry += s.name() + " varchar(32), ";
+
         }
         qry +=  "PRIMARY KEY (ServerID)," +
                 "FOREIGN KEY (ServerID) REFERENCES tbl_server(ServerID)" +
