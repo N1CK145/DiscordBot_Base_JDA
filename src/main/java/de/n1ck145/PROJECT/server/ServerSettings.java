@@ -1,37 +1,39 @@
 package de.n1ck145.PROJECT.server;
 
 import de.n1ck145.PROJECT.main.Main;
-import de.n1ck145.PROJECT.utils.MySQL_Connection;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
 public class ServerSettings {
-    private HashMap<SETTING, String> serverSettings = new HashMap<>();
+    private HashMap<Setting, String> serverSettings = new HashMap<>();
 
-    public void setSetting(SETTING setting, String value){
-            serverSettings.put(setting, value);
+    public void setSetting(Setting setting, String value){
+        serverSettings.put(setting, value);
+        System.out.println("Set setting " + setting.name() + " to " + value);
     }
-    public String getSetting(SETTING setting){
+
+    public String getSetting(Setting setting){
         return serverSettings.get(setting);
     }
-    public void saveToDatabase(){
-        for (SETTING s: SETTING.values()) {
-            Main.getDatabase().update("SET " + s.name() + "");
-        }
+
+    public void pushToDatabase(String serverID, Setting setting){
+        Main.getDatabase().update("UPDATE `tbl_serverSettings` SET `" + setting.name() + "` = '" + serverSettings.get(setting) + "' " +
+                "WHERE `tbl_serverSettings`.`ServerID` = '" + serverID + "';");
     }
 
     public static ServerSettings getSettingsFromDatabase(String serverID) throws SQLException {
         ServerSettings s = new ServerSettings();
-        for(SETTING setting : SETTING.values()){
-            ResultSet resultSet = Main.getDatabase().getResult("SELECT " + setting.name() + " FROM tbl_ServerSettings " +
+        for(Setting setting : Setting.values()){
+            ResultSet resultSet = Main.getDatabase().getResult("SELECT " + setting.name() + " FROM tbl_serverSettings " +
                     "WHERE ServerID LIKE '" + serverID + "';");
             resultSet.next();
-            String value = resultSet.getString(0);
+            String value = resultSet.getString(1);
 
             s.setSetting(setting, value);
         }
         return s;
     }
+
 }

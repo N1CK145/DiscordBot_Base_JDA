@@ -18,7 +18,7 @@ public class Server {
                 "WHERE ServerID LIKE '" + id + "';");
         settingsSet.next();
 
-        serverSettings.setSetting(SETTING.PREFIX, settingsSet.getString("PREFIX"));
+        serverSettings.setSetting(Setting.PREFIX, settingsSet.getString("PREFIX"));
     }
 
     // Getter

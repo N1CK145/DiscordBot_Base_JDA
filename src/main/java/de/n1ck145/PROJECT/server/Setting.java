@@ -1,5 +1,5 @@
 package de.n1ck145.PROJECT.server;
 
-public enum SETTING{
+public enum Setting {
     PREFIX
 }

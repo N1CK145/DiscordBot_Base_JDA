@@ -1,10 +1,12 @@
 package de.n1ck145.PROJECT.utils;
 
 import java.awt.*;
-import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 import de.n1ck145.PROJECT.main.Main;
+import de.n1ck145.PROJECT.server.ServerManager;
+import de.n1ck145.PROJECT.server.Setting;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -21,7 +23,20 @@ public class CommandManager {
                 if(e.getMember().hasPermission(Permission.ADMINISTRATOR))
                     manager.shutdown();
                 else
-                    sendErrorMessageNoPermission(e.getChannel(), "ADMINISTRATOR");
+                    sendErrorMessageNoPermission(e.getChannel(), Permission.ADMINISTRATOR);
+                break;
+            case "prefix":
+                if(args.size() == 1){
+                    ServerManager.getServer(e.getGuild().getId())
+                            .getServerSettings()
+                            .setSetting(Setting.PREFIX, args.get(0));
+
+                    ServerManager.getServer(e.getGuild().getId())
+                            .getServerSettings()
+                            .pushToDatabase(e.getGuild().getId(), Setting.PREFIX);
+                    sendSuccessMessage(e.getChannel(), "Updated prefix!");
+                }else
+                    sendErrorMessageInvalidSyntax(e.getChannel());
                 break;
             case "help":
                 EmbedBuilder builder = new EmbedBuilder();
@@ -30,6 +45,7 @@ public class CommandManager {
 
                 String helpAdmin = "";
                 helpAdmin += "`stop` - stops the bot\n";
+                helpAdmin += "`prefix [prefix]` - change the prefix of this server";
 
                 builder.setTitle("Help:");
                 builder.setColor(Color.decode("#912c24"));
@@ -40,7 +56,7 @@ public class CommandManager {
                 e.getChannel().sendMessage(builder.build()).queue();
                 break;
             default:
-                e.getChannel().sendMessage("Use `!help` to list commands!").queue();
+                sendErrorMessageInvalidSyntax(e.getChannel());
                 break;
         }
     }
@@ -58,12 +74,12 @@ public class CommandManager {
         builder.addField("Error Message:", "Invalid Syntax. Use `help`!", false);
         channel.sendMessage(builder.build()).queue();
     }
-    private static void sendErrorMessageNoPermission(MessageChannel channel, String permission){
+    private static void sendErrorMessageNoPermission(MessageChannel channel, Permission permission){
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Error");
         builder.setColor(Color.decode("#aa0000"));
         builder.addField("Error Message:", "No permission", false);
-        builder.addField("Permission:", permission, false);
+        builder.addField("Permission:", permission.getName(), false);
         channel.sendMessage(builder.build()).queue();
     }
     private static void sendErrorMessageMissingRole(MessageChannel channel, Role role){

@@ -4,7 +4,8 @@ import javax.security.auth.login.LoginException;
 
 import de.n1ck145.PROJECT.listener.Listener;
 import de.n1ck145.PROJECT.utils.MySQL_Connection;
-import de.n1ck145.PROJECT.server.SETTING;
+import de.n1ck145.PROJECT.server.Setting;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
@@ -17,7 +18,6 @@ import java.util.Properties;
 public class Main {
     private static Main main;
     private static ShardManager shardManager;
-    private static String CommandPrefix = "--";
     private static String botToken;
     private static String version;
     private static Properties properties;
@@ -38,6 +38,7 @@ public class Main {
             e.printStackTrace();
         }
     }
+
     @Deprecated
     public Main() throws LoginException, IllegalArgumentException {
         version = "1.0.0alpha";
@@ -47,6 +48,7 @@ public class Main {
 
         shardManager = new DefaultShardManagerBuilder(botToken).build();
         shardManager.addEventListener(new Listener());
+        shardManager.setActivity(Activity.streaming("Test", "Teset2"));
     }
 
     private void initSettingsFile(){
@@ -99,7 +101,7 @@ public class Main {
 
         String qry = "CREATE TABLE IF NOT EXISTS tbl_serverSettings(" +
                 "ServerID varchar(32) NOT NULL,";
-        for(SETTING s : SETTING.values()){
+        for(Setting s : Setting.values()){
             if(s.name().equals("PREFIX"))
                 qry += s.name() + " varchar(32) DEFAULT '--', ";
             else
@@ -117,9 +119,6 @@ public class Main {
     }
     public static ShardManager getShardManager() {
         return shardManager;
-    }
-    public static String getCommandPrefix() {
-        return CommandPrefix;
     }
     public static String getVersion() {
         return version;
